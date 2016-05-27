@@ -1,0 +1,7 @@
+C:\Users\C17 Developer\documents\visual studio 2015\Projects\WebAPI\TestRepository\bin\Debug\TestRepository.dll
+C:\Users\C17 Developer\documents\visual studio 2015\Projects\WebAPI\TestRepository\bin\Debug\TestRepository.pdb
+C:\Users\C17 Developer\documents\visual studio 2015\Projects\WebAPI\TestRepository\bin\Debug\Microsoft.VisualStudio.QualityTools.UnitTestFramework.dll
+C:\Users\C17 Developer\documents\visual studio 2015\Projects\WebAPI\TestRepository\bin\Debug\fr\Microsoft.VisualStudio.QualityTools.UnitTestFramework.resources.dll
+C:\Users\C17 Developer\documents\visual studio 2015\Projects\WebAPI\TestRepository\obj\Debug\TestRepository.csprojResolveAssemblyReference.cache
+C:\Users\C17 Developer\documents\visual studio 2015\Projects\WebAPI\TestRepository\obj\Debug\TestRepository.dll
+C:\Users\C17 Developer\documents\visual studio 2015\Projects\WebAPI\TestRepository\obj\Debug\TestRepository.pdb
