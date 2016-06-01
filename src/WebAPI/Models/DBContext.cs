@@ -35,7 +35,7 @@ namespace WebAPI.Models
             modelBuilder.Entity<RecetteIngredient>()
                 .HasOne(x => x.Ingredient)
                 .WithMany(x => x.IngredientRecettes)
-                .HasForeignKey(x => x.IngredientId);
+                .HasForeignKey(x => x.IngredientId);  
         }
     }
 }

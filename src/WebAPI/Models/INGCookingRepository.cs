@@ -13,6 +13,8 @@ namespace WebAPI.Models
         Object FindById(int id, string tableName);
         Object FindByName(string name, string tableName);
         IQueryable<Object> GetAll<T>(T entity);
-        Byte[] FileToByteArray(string fileName);  
+        Byte[] FileToByteArray(string fileName);
+        IQueryable<Comment> GetCommentsByRecetteId(int id);
+        IQueryable<Ingredient> GetIngredientsByRecetteId(int id);
     }
 }

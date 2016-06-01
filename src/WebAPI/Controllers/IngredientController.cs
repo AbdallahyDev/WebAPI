@@ -29,7 +29,7 @@ namespace WebAPI.Controllers
         [HttpGet]
         public JsonResult Get()
         {
-            return Json(new string[] { "value1Ing", "value2" }); 
+            return Json(_ngCookingRepository.GetAll<Ingredient>(_ingredient)); 
         }
 
         // GET api/values/5
@@ -53,16 +53,16 @@ namespace WebAPI.Controllers
                     foreach (var ingredient in ingredientsVM)
                     {
                         object i = _ngCookingRepository.FindByName(ingredient.Category, "Category");
-                        var newIngredient = new Ingredient() {
+                        var newIngredient = new Ingredient() { 
                             Calories =ingredient.Calories,
-                            CategoryId =((Category)i).Id, 
+                            Category =ingredient.Category, 
                             IsAvailable =ingredient.IsAvailable,  
                             Name =ingredient.Name, 
-                            Picture =_ngCookingRepository.FileToByteArray("ngCooking/img/ingredients/"+ingredient.Picture)  
+                            Picture =_ngCookingRepository.FileToByteArray("ngCooking/img/ingredients/"+ingredient.Picture)    
                        };   
-                         //_ngCookingRepository.Add<Ingredient>(newIngredient);    
+                         _ngCookingRepository.Add<Ingredient>(newIngredient);     
                     }
-                    return Json("it succesfully added");
+                    return Json("It is succesfully added"); 
                 }
             }
             catch (Exception ex)

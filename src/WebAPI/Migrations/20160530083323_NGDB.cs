@@ -5,7 +5,7 @@ using Microsoft.Data.Entity.Metadata;
 
 namespace WebAPI.Migrations
 {
-    public partial class DBNGCooking : Migration
+    public partial class NGDB : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -13,7 +13,8 @@ namespace WebAPI.Migrations
                 name: "Category",
                 columns: table => new
                 {
-                    Id = table.Column<string>(nullable: false),
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     Name = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
@@ -47,7 +48,7 @@ namespace WebAPI.Migrations
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     Calories = table.Column<float>(nullable: false),
-                    CategoryId = table.Column<string>(nullable: true),
+                    Category = table.Column<string>(nullable: true),
                     IsAvailable = table.Column<bool>(nullable: false),
                     Name = table.Column<string>(nullable: true),
                     Picture = table.Column<byte[]>(nullable: true)
@@ -55,12 +56,6 @@ namespace WebAPI.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Ingredient", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Ingredient_Category_CategoryId",
-                        column: x => x.CategoryId,
-                        principalTable: "Category",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
                 });
             migrationBuilder.CreateTable(
                 name: "Recette",
@@ -69,7 +64,7 @@ namespace WebAPI.Migrations
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     Calories = table.Column<float>(nullable: false),
-                    CategoryName = table.Column<string>(nullable: true),
+                    Category = table.Column<string>(nullable: true),
                     CreatorId = table.Column<int>(nullable: false),
                     IsAvailable = table.Column<bool>(nullable: false),
                     Name = table.Column<string>(nullable: true),
@@ -94,7 +89,7 @@ namespace WebAPI.Migrations
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     CommentBody = table.Column<string>(nullable: true),
                     Mark = table.Column<int>(nullable: false),
-                    RecetteId = table.Column<int>(nullable: false),
+                    RecetteId = table.Column<int>(nullable: true),
                     Title = table.Column<string>(nullable: true),
                     UserId = table.Column<int>(nullable: false)
                 },
@@ -106,7 +101,7 @@ namespace WebAPI.Migrations
                         column: x => x.RecetteId,
                         principalTable: "Recette",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Comment_Communaute_UserId",
                         column: x => x.UserId,
@@ -141,11 +136,11 @@ namespace WebAPI.Migrations
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable("Category");
             migrationBuilder.DropTable("Comment");
             migrationBuilder.DropTable("RecetteIngredient");
             migrationBuilder.DropTable("Ingredient");
             migrationBuilder.DropTable("Recette");
-            migrationBuilder.DropTable("Category");
             migrationBuilder.DropTable("Communaute");
         }
     }

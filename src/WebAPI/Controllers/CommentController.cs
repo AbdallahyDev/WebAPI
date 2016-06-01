@@ -3,71 +3,67 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNet.Mvc;
-using WebAPI.Models;
 using Microsoft.Extensions.Logging;
-using WebAPI.ViewModels;
+using WebAPI.Models;
 using System.Net;
 
 // For more information on enabling Web API for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
-//Microsoft.AspNet.Server.Kestrel
 
 namespace WebAPI.Controllers
 {
     [Route("api/[controller]")]
-    public class CategoryController : Controller
+    public class CommentController : Controller
     {
-        private ILogger<Category> _logger;
+        private ILogger<Comment> _logger;
         private INGCookingRepository _ngCookingRepository;
-        private Category _category;
+        private Comment _comment;
 
-        public CategoryController(INGCookingRepository iNGCookingRep, ILogger<Category> logger)
+        public CommentController(INGCookingRepository iNGCookingRep, ILogger<Comment> logger)
         {
-            _ngCookingRepository = iNGCookingRep;  
-            _category = new Category();
+            _ngCookingRepository = iNGCookingRep;
+            _comment = new Comment();
             _logger = logger;
         }
         // GET: api/values
         [HttpGet]
         public JsonResult Get()
         {
-            return Json(_ngCookingRepository.GetAll<Category>(_category)); 
+            
+            return Json(_ngCookingRepository.GetAll<Comment>(_comment));
         }
 
         // GET api/values/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        public JsonResult Get(string id)
         {
-            return "value";
-        }
-
-        // POST api/values
-        [HttpPost]
-        public JsonResult Post([FromBody]ICollection<CategoryViewModel> categoriesVM)
-        {
+            //return Json(_ngCookingRepository.FindById(int.Parse(id),"Comment"));
+            
             try
             {
                 if (ModelState.IsValid)
                 {
                     //var newRecette = Mapper.Map<Recette>(recetteVM); 
                     Response.StatusCode = (int)HttpStatusCode.Created;
-                    _logger.LogInformation("adding successfuly");
-                    foreach (var category in categoriesVM)
-                    {
-                        var newCategory = new Category(){Name = category.NameToDisplay}; 
-                        _ngCookingRepository.Add<Category>(newCategory);   
-                    }
-                    return Json("it is succesfully added");    
+                    var res = _ngCookingRepository.GetCommentsByRecetteId(int.Parse(id));  
+                    _logger.LogInformation($"adding successfuly {res.Count()}");      
+                    return Json(res);  
+                    //return Json("it is succesfully added"); 
                 }
             }
             catch (Exception ex)
             {
-                Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                Response.StatusCode = (int)HttpStatusCode.BadRequest;  
                 _logger.LogError("failed to save infos");
                 return Json(new { Message = ex.Message, ModelState = ModelState });
             }
-
             Response.StatusCode = (int)HttpStatusCode.BadRequest;
             return Json(new { Message = "Failed.", ModelState = ModelState });
+        }
+
+        // POST api/values
+        [HttpPost]
+        public void Post([FromBody]string value)
+        {
         }
 
         // PUT api/values/5

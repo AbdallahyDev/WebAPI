@@ -32,9 +32,9 @@ namespace WebAPI.Controllers
         [HttpGet]
         public JsonResult Get()
         {
-            Object result = _ngCookingRepository.FindById(1,"Communaute");
-            //return Json(_ngCookingRepository.GetAll<Communaute>(_communaute));
-            return Json(((Communaute)result));  
+            //Object result = _ngCookingRepository.FindById(1,"Communaute");
+            return Json(_ngCookingRepository.GetAll<Communaute>(_communaute));
+            //return Json(((Communaute)result));  
         }
        /* public Dictionary<String, Object> parse(byte[] json)
         {

@@ -20,8 +20,6 @@ namespace WebAPI.Models
         public virtual ICollection<RecetteIngredient> IngredientRecettes { get; set; }
         public Byte[] Picture { get; set; }
         public float Calories { get; set; }
-        public string CategoryId { get; set; }
-        [ForeignKey("CategoryId")]
-        public virtual Category Category { get; set; } 
+        public string Category { get; set; } 
     }
 }

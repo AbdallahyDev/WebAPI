@@ -8,8 +8,8 @@ using WebAPI.Models;
 namespace WebAPI.Migrations
 {
     [DbContext(typeof(DBContext))]
-    [Migration("20160527160006_DBNGCooking")]
-    partial class DBNGCooking
+    [Migration("20160530083323_NGDB")]
+    partial class NGDB
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -19,7 +19,8 @@ namespace WebAPI.Migrations
 
             modelBuilder.Entity("WebAPI.Models.Category", b =>
                 {
-                    b.Property<string>("Id");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
 
                     b.Property<string>("Name");
 
@@ -35,7 +36,7 @@ namespace WebAPI.Migrations
 
                     b.Property<int>("Mark");
 
-                    b.Property<int>("RecetteId");
+                    b.Property<int?>("RecetteId");
 
                     b.Property<string>("Title");
 
@@ -77,7 +78,7 @@ namespace WebAPI.Migrations
 
                     b.Property<float>("Calories");
 
-                    b.Property<string>("CategoryId");
+                    b.Property<string>("Category");
 
                     b.Property<bool>("IsAvailable");
 
@@ -95,7 +96,7 @@ namespace WebAPI.Migrations
 
                     b.Property<float>("Calories");
 
-                    b.Property<string>("CategoryName");
+                    b.Property<string>("Category");
 
                     b.Property<int>("CreatorId");
 
@@ -128,13 +129,6 @@ namespace WebAPI.Migrations
                     b.HasOne("WebAPI.Models.Communaute")
                         .WithMany()
                         .HasForeignKey("UserId");
-                });
-
-            modelBuilder.Entity("WebAPI.Models.Ingredient", b =>
-                {
-                    b.HasOne("WebAPI.Models.Category")
-                        .WithMany()
-                        .HasForeignKey("CategoryId");
                 });
 
             modelBuilder.Entity("WebAPI.Models.Recette", b =>

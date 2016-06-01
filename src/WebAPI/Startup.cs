@@ -40,17 +40,16 @@ namespace NGCookingBackEnd
             {
                 options.UseSqlServer(Configuration["Data:ConnectionString"]);
             });
-            services.AddSingleton<INGCookingRepository , NGCookingRepository>();      
+            //services.AddSingleton<INGCookingRepository , NGCookingRepository>();      
+            services.AddScoped<INGCookingRepository, NGCookingRepository>(); 
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
-            loggerFactory.AddConsole(Configuration.GetSection("Logging"));
+            loggerFactory.AddConsole(Configuration.GetSection("Logging")); 
             loggerFactory.AddDebug();
-
             app.UseIISPlatformHandler();
-
             app.UseStaticFiles();
             Mapper.Initialize(config => {
                 config.CreateMap<Recette, RecetteViewModel>().ReverseMap(); 
@@ -71,8 +70,6 @@ namespace NGCookingBackEnd
                 } 
             });
             app.UseMvc(); 
-            //DBTest.Initialize(app.ApplicationServices);
-
         }
 
         // Entry point for the application.
