@@ -81,7 +81,7 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost]
-        public JsonResult Post([FromBody]RecetteViewModel recetteVM)
+        public JsonResult Post([FromBody]RecetteFromViewModel recetteVM)  
         {
             try
             {
@@ -89,25 +89,27 @@ namespace WebAPI.Controllers
                 {
                     //var newRecette = Mapper.Map<Recette>(recetteVM); 
                     Response.StatusCode = (int)HttpStatusCode.Created;
-                    _logger.LogInformation("adding successfuly");
+                    var pic = _ngCookingRepository.FileToByteArray(recetteVM.Picture);
+                    RecetteFromViewModel newRec= recetteVM;
+                    _logger.LogInformation($"adding successfuly:{recetteVM.Name}");   
                         var newRecette = new Recette()
                         {
-                            Calories = recetteVM.Calories,
+                            Calories = recetteVM.Calories, 
                             CreatorId = recetteVM.CreatorId,
-                            IsAvailable = recetteVM.IsAvailable,
+                           // IsAvailable = recetteVM.IsAvailable,
                             Name = recetteVM.Name,
-                            Preparation = recetteVM.Preparation,
-                            Category = recetteVM.Category,
-                            Picture = recetteVM.Picture
+                            Preparation = recetteVM.Prepa,
+                            Category = recetteVM.Category.Name,
+                            //Picture = _ngCookingRepository.FileToByteArray(recetteVM.Picture)
                         };
-                        //_ngCookingRepository.Add<Recette>(newRecette);  
-                        RecetteIngredient newRecetteIngredient = null; 
-                        foreach (var ing in recetteVM.Ingredients)
-                        {
-                            //object ingredient = _ngCookingRepository.FindByName(ing, "Ingredient");
-                           // newRecetteIngredient = new RecetteIngredient() { IngredientId = ((Ingredient)ingredient).Id, RecetteId = ((Recette)_ngCookingRepository.FindByName(newRecette.Name,"Recette")).Id};
-                            //_ngCookingRepository.Add<RecetteIngredient>(newRecetteIngredient);  
-                        }
+                   // _ngCookingRepository.Add<Recette>(newRecette);  
+                    RecetteIngredient newRecetteIngredient = null;  
+                    foreach (var ing in recetteVM.Ingredients) 
+                    {
+                            object ingredient = _ngCookingRepository.FindByName(ing.Name, "Ingredient");
+                            newRecetteIngredient = new RecetteIngredient() { IngredientId = ((Ingredient)ingredient).Id, RecetteId = ((Recette)_ngCookingRepository.FindByName(newRecette.Name,"Recette")).Id};
+                           // _ngCookingRepository.Add<RecetteIngredient>(newRecetteIngredient);  
+                    }
                     
                     //return Json(newRecette); 
                     //return Json(CreatedAtRoute("GetTodo", new { controller = "RecetteCnt" }, recetteVM));

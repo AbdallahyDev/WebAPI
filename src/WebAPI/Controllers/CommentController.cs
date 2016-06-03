@@ -6,6 +6,7 @@ using Microsoft.AspNet.Mvc;
 using Microsoft.Extensions.Logging;
 using WebAPI.Models;
 using System.Net;
+using WebAPI.ViewModels;
 
 // For more information on enabling Web API for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -20,7 +21,7 @@ namespace WebAPI.Controllers
 
         public CommentController(INGCookingRepository iNGCookingRep, ILogger<Comment> logger)
         {
-            _ngCookingRepository = iNGCookingRep;
+            _ngCookingRepository = iNGCookingRep;  
             _comment = new Comment();
             _logger = logger;
         }
@@ -62,8 +63,29 @@ namespace WebAPI.Controllers
 
         // POST api/values
         [HttpPost]
-        public void Post([FromBody]string value)
+        public JsonResult Post([FromBody]CommentViewModel commentVM) 
         {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    Response.StatusCode = (int)HttpStatusCode.Created;
+                    Comment newComment = new Comment() { CommentBody = commentVM.Comments, Mark = commentVM.Mark, Title = commentVM.Title,
+                        UserId = commentVM.UserId,
+                        Recette = (Recette)_ngCookingRepository.FindById(commentVM.RecetteId,"Recette") 
+                    };
+                    _ngCookingRepository.Add<Comment>(newComment);  
+                    return Json("comment successfully added");  
+                }
+            }
+            catch (Exception ex)
+            {
+                Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                _logger.LogError("failed to save infos");
+                return Json(new { Message = ex.Message, ModelState = ModelState });
+            }
+            Response.StatusCode = (int)HttpStatusCode.BadRequest;
+            return Json(new { Message = "Failed.", ModelState = ModelState });   
         }
 
         // PUT api/values/5

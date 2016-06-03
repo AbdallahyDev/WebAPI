@@ -9,7 +9,8 @@ namespace WebAPI.ViewModels
     {
         public string Title { get; set; }  
         public int Mark { get; set; }
-        public string Comment { get; set; } 
-        public int UserId { get; set; } 
+        public string Comments { get; set; } 
+        public int UserId { get; set; }
+        public int RecetteId { get; set; } 
     }
 }

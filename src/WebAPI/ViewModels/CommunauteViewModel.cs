@@ -7,7 +7,7 @@ namespace WebAPI.ViewModels
 {
     public class CommunauteViewModel
     {
-        public int Id { get; set; }
+       
         public string Firstname { get; set; }
         public string Surname { get; set; }
         public string Email { get; set; }

@@ -51,34 +51,27 @@ namespace WebAPI.Controllers
 
         // POST api/values
         [HttpPost]
-        public JsonResult Post([FromBody]ICollection<CommunauteViewModel> communautesVM)
+        public JsonResult Post([FromBody]CommunauteViewModel communauteVM)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
-                    //var newRecette = Mapper.Map<Recette>(recetteVM); 
                     Response.StatusCode = (int)HttpStatusCode.Created;   
                     _logger.LogInformation("adding successfuly");
-                    foreach (var communaute in communautesVM)
-                    {
-                        //var pic = FileToByteArray(communaute.Picture); 
                         var newCommunaute = new Communaute() {
-                            Bio = communaute.Bio,
-                            Birth = communaute.Birth,
-                            City = communaute.City,
-                            Email = communaute.Email,
-                            Firstname = communaute.Firstname, 
-                            Surname = communaute.Surname,
-                            Level = communaute.Level,
-                            Password = communaute.Password, 
-                            Picture =  _ngCookingRepository.FileToByteArray("ngCooking/"+communaute.Picture)
+                            Bio = communauteVM.Bio,
+                            Birth = communauteVM.Birth,
+                            City = communauteVM.City,
+                            Email = communauteVM.Email,
+                            Firstname = communauteVM.Firstname, 
+                            Surname = communauteVM.Surname,
+                            Level = communauteVM.Level,
+                            Password = communauteVM.Password, 
+                            //Picture =  _ngCookingRepository.FileToByteArray("ngCooking/"+communaute.Picture)
                         };
-                        _ngCookingRepository.Add<Communaute>(newCommunaute); 
-                    }
-                    //return Json(newRecette);  
-                    //return Json(CreatedAtRoute("GetTodo", new { controller = "RecetteCnt" }, recetteVM)); 
-                    return Json("it works");
+                       _ngCookingRepository.Add<Communaute>(newCommunaute); 
+                    return Json("successfuly added");
                 }
             }
             catch (Exception ex)
