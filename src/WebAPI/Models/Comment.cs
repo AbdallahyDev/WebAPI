@@ -12,7 +12,7 @@ namespace WebAPI.Models
         [ForeignKey("RecetteId")]*/
         public virtual Recette Recette { get; set;}
         public int UserId { get; set; }  
-        [ForeignKey("UserId")]
-        public virtual Communaute Communaute { get; set;}       
+       // [ForeignKey("UserId")]
+       // public virtual Communaute Communaute { get; set;}       
     }
 }

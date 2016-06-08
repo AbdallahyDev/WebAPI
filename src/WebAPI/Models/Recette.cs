@@ -24,9 +24,9 @@ namespace WebAPI.Models
         public float Calories { get; set; } 
         public string Preparation { get; set; }
         public virtual List<Comment> Comments { get; set; } 
-        public string Category { get; set; }   
+        public string Category { get; set; }    
         public int CreatorId { get; set; }   
-        [ForeignKey("CreatorId")] 
-        public virtual Communaute Communaute { get; set; } 
+       // [ForeignKey("CreatorId")] 
+       // public virtual Communaute Communaute { get; set; } 
     }
 }

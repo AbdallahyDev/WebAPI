@@ -12,6 +12,7 @@ using Newtonsoft.Json.Serialization;
 using WebAPI.Models;
 using AutoMapper;
 using WebAPI.ViewModels;
+using Microsoft.AspNet.Identity.EntityFramework;
 
 namespace NGCookingBackEnd
 {
@@ -23,7 +24,7 @@ namespace NGCookingBackEnd
             var builder = new ConfigurationBuilder()
                 .AddJsonFile("appsettings.json")
                 .AddEnvironmentVariables();
-            Configuration = builder.Build();
+            Configuration = builder.Build(); 
         }
 
         public IConfigurationRoot Configuration { get; set; }
@@ -39,9 +40,11 @@ namespace NGCookingBackEnd
             services.AddEntityFramework().AddSqlServer().AddDbContext<DBContext>(options =>
             {
                 options.UseSqlServer(Configuration["Data:ConnectionString"]);
-            });
-            //services.AddSingleton<INGCookingRepository , NGCookingRepository>();      
-            services.AddScoped<INGCookingRepository, NGCookingRepository>(); 
+            });     
+            
+            //to add the security
+            services.AddIdentity<Communaute, IdentityRole>().AddEntityFrameworkStores<DBContext>(); 
+            services.AddScoped<INGCookingRepository, NGCookingRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -66,10 +69,13 @@ namespace NGCookingBackEnd
                 }
                 else
                 {
-                    await next();
+                    await next(); 
                 } 
             });
+            app.UseIdentity(); 
             app.UseMvc(); 
+            
+            
         }
 
         // Entry point for the application.

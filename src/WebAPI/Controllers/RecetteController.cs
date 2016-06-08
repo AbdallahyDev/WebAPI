@@ -44,10 +44,10 @@ namespace WebAPI.Controllers
                     Calories = recette.Calories, 
                     Category = recette.Category,    
                     CreatorId = recette.CreatorId,  
-                    IsAvailable = recette.IsAvailable,
+                    IsAvailable = recette.IsAvailable, 
                     Name = recette.Name,
-                    Picture = recette.Picture,
-                    Preparation = recette.Preparation 
+                    Picture = recette.Picture, 
+                    Preparation = recette.Preparation  
                 };
                 _logger.LogInformation($"ça marhe pour les ingredients:{ingDB.Count}");
                 recetteVM.Ingredients = new List<Ingredient>();
@@ -95,7 +95,7 @@ namespace WebAPI.Controllers
                         var newRecette = new Recette()
                         {
                             Calories = recetteVM.Calories, 
-                            CreatorId = recetteVM.CreatorId,
+                            CreatorId = recetteVM.CreatorId, 
                            // IsAvailable = recetteVM.IsAvailable,
                             Name = recetteVM.Name,
                             Preparation = recetteVM.Prepa,
@@ -127,55 +127,7 @@ namespace WebAPI.Controllers
             Response.StatusCode = (int)HttpStatusCode.BadRequest;
             return Json(new { Message = "Failed.", ModelState = ModelState });
         }
-        // POST api/values
-        /* [HttpPost]
-         public JsonResult Post([FromBody]ICollection <RecetteViewModel> recettesVM)
-         {
-             try
-             {
-                 if (ModelState.IsValid)
-                 {
-                     //var newRecette = Mapper.Map<Recette>(recetteVM); 
-                     Response.StatusCode = (int)HttpStatusCode.Created;
-                     _logger.LogInformation("adding successfuly");
-                     int idRecette = 1;
-                     foreach (var recette in recettesVM)
-                     {
-                         var newRecette = new Recette() {Calories=recette.Calories, CreatorId=recette.CreatorId, IsAvailable = recette.IsAvailable, Name=recette.Name, Preparation=recette.Preparation,
-                             Category = recette.Category,Picture= _ngCookingRepository.FileToByteArray("ngCooking/"+recette.Picture)
-                         };
-                         //_ngCookingRepository.Add<Recette>(newRecette);  
-                         RecetteIngredient newRecetteIngredient = null;
-                         foreach (var ing in recette.Ingredients) { 
-                             object ingredient = _ngCookingRepository.FindByName(ing, "Ingredient"); 
-                             newRecetteIngredient = new RecetteIngredient() {IngredientId=((Ingredient)ingredient).Id, RecetteId=idRecette }; 
-                             //_ngCookingRepository.Add<RecetteIngredient>(newRecetteIngredient);  
-                         }
-
-                         foreach (var comment in recette.Comments)
-                         {
-                             var newComment = new Comment() {CommentBody=comment.Comment, Mark= comment.Mark, Title=comment.Title,UserId=comment.UserId,Recette=newRecette};
-                             //_ngCookingRepository.Add<Comment>(newComment);   
-                         }
-                         idRecette++;
-                     }
-                     //return Json(newRecette); 
-                     //return Json(CreatedAtRoute("GetTodo", new { controller = "RecetteCnt" }, recetteVM));
-
-                      return Json("it is succesfully added");      
-                 }
-             }
-             catch (Exception ex)
-             {
-                 Response.StatusCode = (int)HttpStatusCode.BadRequest;
-                 _logger.LogError("failed to save infos");
-                 return Json(new { Message = ex.Message, ModelState = ModelState });     
-             }
-
-             Response.StatusCode = (int)HttpStatusCode.BadRequest;
-             return Json(new { Message = "Failed.", ModelState = ModelState }); 
-         }
-         */
+        
         // PUT api/values/5
         [HttpPut("{id}")]
         public void Put(int id, [FromBody]string value)

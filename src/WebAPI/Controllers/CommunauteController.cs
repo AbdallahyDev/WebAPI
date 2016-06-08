@@ -7,9 +7,8 @@ using WebAPI.Models;
 using Microsoft.Extensions.Logging;
 using WebAPI.ViewModels;
 using System.Net;
-using System.IO;
-using System.Text;
-using Newtonsoft.Json;
+using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Authorization;
 
 // For more information on enabling Web API for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -21,45 +20,58 @@ namespace WebAPI.Controllers
         private INGCookingRepository _ngCookingRepository;
         private Communaute _communaute;
         private ILogger<Communaute> _logger;
+        private UserManager<Communaute> _communauteManeger;
+        private SignInManager<Communaute> _signInManager;
 
-        public CommunauteController(INGCookingRepository iNGCookingRep, ILogger<Communaute> logger)
+        public CommunauteController(INGCookingRepository iNGCookingRep, ILogger<Communaute> logger, UserManager<Communaute> communauteManeger, SignInManager<Communaute> signInManager)
         {
             _ngCookingRepository = iNGCookingRep;
             _communaute = new Communaute();
-            _logger = logger; 
+            _logger = logger;
+            _communauteManeger = communauteManeger;
+            _signInManager = signInManager; 
         }
+
         // GET: api/values
         [HttpGet]
         public JsonResult Get()
         {
             //Object result = _ngCookingRepository.FindById(1,"Communaute");
-            return Json(_ngCookingRepository.GetAll<Communaute>(_communaute));
-            //return Json(((Communaute)result));  
-        }
-       /* public Dictionary<String, Object> parse(byte[] json)
-        {
-            string jsonStr = Encoding.UTF8.GetString(json);
-            return JsonConvert.DeserializeObject<Dictionary<String, Object>>(jsonStr);  
-        }*/
-        // GET api/values/5
-        [HttpGet("{id}")]
-        public string Get(int id)
-        {
-            return "value";
+            var communautes = _ngCookingRepository.GetAll<Communaute>(_communaute);
+            ICollection<CommunauteViewModel> communautesVM = new List<CommunauteViewModel>(); 
+            foreach (Communaute communaute in communautes)
+            {
+                var communauteVM = new CommunauteViewModel
+                {
+                    Id = communaute.Id,
+                    Bio = communaute.Bio,
+                    Birth = communaute.Birth,
+                    City = communaute.City,
+                    Firstname = communaute.Firstname,
+                    Level = communaute.Level,
+                    Picture = communaute.Picture,
+                    Surname = communaute.Surname
+                };
+                communautesVM.Add(communauteVM);
+            }
+            return Json(communautesVM);    
         }
         
-
+        
         // POST api/values
+        
+        [Route("Register")]
         [HttpPost]
-        public JsonResult Post([FromBody]CommunauteViewModel communauteVM)
+        [AllowAnonymous] 
+        public async Task<JsonResult> Register([FromBody]CommunauteFromViewModel communauteVM)
         {
             try
-            {
+            { 
                 if (ModelState.IsValid)
-                {
-                    Response.StatusCode = (int)HttpStatusCode.Created;   
+                {                 
+                    Response.StatusCode = (int)HttpStatusCode.Created;     
                     _logger.LogInformation("adding successfuly");
-                        var newCommunaute = new Communaute() {
+                        var newCommunaute = new Communaute {
                             Bio = communauteVM.Bio,
                             Birth = communauteVM.Birth,
                             City = communauteVM.City,
@@ -67,24 +79,95 @@ namespace WebAPI.Controllers
                             Firstname = communauteVM.Firstname, 
                             Surname = communauteVM.Surname,
                             Level = communauteVM.Level,
-                            Password = communauteVM.Password, 
-                            //Picture =  _ngCookingRepository.FileToByteArray("ngCooking/"+communaute.Picture)
-                        };
-                       _ngCookingRepository.Add<Communaute>(newCommunaute); 
-                    return Json("successfuly added");
+                            //Picture = communauteVM.Picture,  
+                            UserName = communauteVM.UserName
+                        }; 
+
+                    var result = await _communauteManeger.CreateAsync(newCommunaute, communauteVM.Password);  
+                    if (result.Succeeded) 
+                    {
+                        await _signInManager.SignInAsync(newCommunaute, true);    
+                        return Json("successfuly added");  
+                    }
+                    else
+                    {
+                        foreach (var error in result.Errors)
+                        {
+                            ModelState.AddModelError("", error.Description);       
+                        }
+                        return Json(result.Errors.ToList()); 
+                    }
+                    
                 }
             }
             catch (Exception ex)
             {
                 Response.StatusCode = (int)HttpStatusCode.BadRequest;
-                _logger.LogError("failed to save infos");
-                return Json(new { Message = ex.Message, ModelState = ModelState });
+                _logger.LogError($"failed to save infos:{ex.Message}, stack:{ex.InnerException}"); 
+                return Json(new { Message = ex.Message, ModelState = ModelState }); 
             }
 
             Response.StatusCode = (int)HttpStatusCode.BadRequest;
             return Json(new { Message = "Failed.", ModelState = ModelState });
         }
 
+        
+        [Route("Logout")]
+        [HttpPost]
+        public async Task<JsonResult> Logout()
+        {
+            try
+            {
+                await _signInManager.SignOutAsync();
+                Response.StatusCode = (int)HttpStatusCode.Created;
+                _logger.LogInformation("logout successfuly"); 
+                return Json("logout successfuly"); 
+            }
+            catch (Exception ex)
+            {
+                Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                _logger.LogError($"failed to save infos:{ex.Message}, stack:{ex.InnerException}");
+                return Json(new { Message = ex.Message, ModelState = ModelState });
+            }
+        }
+
+         
+        [AllowAnonymous]
+        [Route("Login")]
+        [HttpPost] 
+        public async Task<IActionResult> Login([FromBody] LoginViewModel loginVM)    
+        {
+           
+            if (ModelState.IsValid) 
+            {
+                // This doesn't count login failures towards account lockout
+                // To enable password failures to trigger account lockout, set lockoutOnFailure: true
+                var result = await _signInManager.PasswordSignInAsync(loginVM.UserName, loginVM.Password, true, lockoutOnFailure: false);   
+                if (result.Succeeded) 
+                {
+                    _logger.LogInformation(1, "User logged in.");   
+                    return Json("User logged in succesfully"); 
+                }
+                if (result.RequiresTwoFactor)
+                {
+                    return Json("RequiresTwoFactor");
+                }
+                if (result.IsLockedOut)
+                {
+                    _logger.LogWarning(2, "User account locked out.");
+                    return Json("Lockout");
+                }
+                else
+                {
+                    ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                    return Json("Invalid login attempt.");
+                }
+            }
+
+            // If we got this far, something failed, redisplay form
+            Response.StatusCode = (int)HttpStatusCode.BadRequest;
+            return Json(new { Message = "Failed.", ModelState = ModelState }); 
+        }
         // PUT api/values/5
         [HttpPut("{id}")]
         public void Put(int id, [FromBody]string value)
@@ -94,7 +177,7 @@ namespace WebAPI.Controllers
         // DELETE api/values/5
         [HttpDelete("{id}")]
         public void Delete(int id)
-        {
-        }
+        { 
+        } 
     }
 }

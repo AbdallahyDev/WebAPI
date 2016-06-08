@@ -5,7 +5,6 @@
   },
 
   "dependencies": {
-    "EntityFramework.Core": "7.0.0-rc1-final",
     "EntityFramework.MicrosoftSqlServer": "7.0.0-rc1-final",
     "EntityFramework.Relational": "7.0.0-rc1-final",
     "EntityFramework.Commands": "7.0.0-rc1-final",
@@ -19,14 +18,15 @@
     "Microsoft.Extensions.Logging.Console": "1.0.0-rc1-final",
     "Microsoft.Extensions.Logging.Debug": "1.0.0-rc1-final",
     "AutoMapper": "5.0.0-beta-1",
-    "Microsoft.AspNet.Hosting" :  "1.0.0-rc1-final"
+    "Microsoft.AspNet.Hosting": "1.0.0-rc1-final",
+    "Microsoft.AspNet.Identity.EntityFramework": "3.0.0-rc1-final"
   },
 
   "commands": {
-    "web": "Microsoft.AspNet.Server.Kestrel",
+    "web": "Microsoft.AspNet.Server.Kestrel", 
     "ef": "EntityFramework.Commands"
   },
-
+ 
   "frameworks": {
     "dnx451": { }   
   },

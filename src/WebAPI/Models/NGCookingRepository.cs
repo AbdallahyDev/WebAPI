@@ -24,11 +24,7 @@ namespace WebAPI.Models
         { 
             Object t = entity;  
             Type type = entity.GetType();
-            if (type.Equals(typeof(Communaute)))
-            {
-                _cntx.Communautes.Add((Communaute)t); 
-            }
-            else if (type.Equals(typeof(Recette)))
+            if (type.Equals(typeof(Recette)))
             {
                 _cntx.Recettes.Add((Recette)t);
             }
@@ -59,7 +55,7 @@ namespace WebAPI.Models
             Type type = entity.GetType();
             if (type.Equals(typeof(Communaute)))
             {
-                _cntx.Communautes.Remove((Communaute)t);
+                //_cntx.Communautes.Remove((Communaute)t);
             }
             else if (type.Equals(typeof(Recette)))
             {
@@ -111,14 +107,11 @@ namespace WebAPI.Models
             switch (tableName)
             {
                 case "Communaute":
-                    res= _cntx.Communautes.Single(x => x.Id == id);
-                    break;
+                    //res= _cntx.Communautes.Single(x =>x.Id == id.ToString());     
+                    break; 
                 case "Comment":
-                    res = _cntx.Comments.Single(x => x.Id == id);
+                    res = _cntx.Comments.Single(x => x.Id == id); 
                     break;
-                //case "RecetteIngredient":
-                //    res = _cntx.RecetteIngredient.Single(x => x.RecetteId == id);
-                //    break;
                 case "Recette": 
                     res = _cntx.Recettes.Single(x => x.Id == id); 
                     break;
@@ -140,7 +133,7 @@ namespace WebAPI.Models
             switch (tableName)
             {
                 case "Communaute":
-                    res = _cntx.Communautes.Single(x => x.Firstname == name); 
+                    //res = _cntx.Communautes.Single(x => x.Firstname == name); 
                     break;
                 case "Comment":
                     res = _cntx.Comments.Single(x => x.Title == name);  
@@ -184,11 +177,11 @@ namespace WebAPI.Models
             IQueryable<Object> results = null;     
             if (type.Equals(typeof(Communaute)))
             {
-                results = _cntx.Communautes.OrderBy(c => c.Id);  
+                results = _cntx.Users.OrderBy(c => c.Firstname);    
             }
             else if (type.Equals(typeof(Recette)))
             {
-                results = _cntx.Recettes.OrderBy(c => c.Id);   
+                results = _cntx.Recettes.OrderBy(c => c.Id);     
             }
             else if (type.Equals(typeof(Comment)))
             {
