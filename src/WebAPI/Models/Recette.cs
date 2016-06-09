@@ -7,7 +7,7 @@ namespace WebAPI.Models
     {
         public Recette()
         {
-            RecettesIngredient = new HashSet<RecetteIngredient>();
+            RecettesIngredient = new HashSet<RecetteIngredient>();  
         }
         public int Id { get; set; } 
         public ICollection<RecetteIngredient> RecettesIngredient { get; set; }

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNet.Builder;
+﻿using Microsoft.AspNet.Builder;
 using Microsoft.AspNet.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -54,7 +50,10 @@ namespace NGCookingBackEnd
             app.UseIISPlatformHandler();
             app.UseStaticFiles();
             Mapper.Initialize(config => {
-                config.CreateMap<Recette, RecetteViewModel>().ReverseMap(); 
+                config.CreateMap<Recette, RecetteViewModel>(); 
+                config.CreateMap<RecetteFromViewModel, Recette>();
+                config.CreateMap<CommunauteFromViewModel, Communaute>();   
+                config.CreateMap<Communaute, CommunauteViewModel>(); 
             });
             app.Use(async (context, next) =>
             {
@@ -74,7 +73,6 @@ namespace NGCookingBackEnd
             app.UseIdentity(); 
             app.UseMvc(); 
         }
-
         // Entry point for the application.
         public static void Main(string[] args) => WebApplication.Run<Startup>(args);
     }

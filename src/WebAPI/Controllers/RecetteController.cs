@@ -6,6 +6,7 @@ using System.Net;
 using WebAPI.ViewModels;
 using WebAPI.Models;
 using Microsoft.Extensions.Logging;
+using AutoMapper;
 
 // For more information on enabling Web API for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -32,29 +33,19 @@ namespace WebAPI.Controllers
             List<RecetteViewModel> recettesVM = new List<RecetteViewModel>();  
             foreach (Recette recette in recettes)
             {
-                List<Ingredient> ingDB = _ngCookingRepository.GetIngredientsByRecetteId(recette.Id).ToList();
-                List<Comment> commentsDB = _ngCookingRepository.GetCommentsByRecetteId(recette.Id).ToList();
-                RecetteViewModel recetteVM = new RecetteViewModel()
-                {
-                    Id = recette.Id.ToString(),
-                    Calories = recette.Calories, 
-                    Category = recette.Category,    
-                    CreatorId = recette.CreatorId,  
-                    IsAvailable = recette.IsAvailable, 
-                    Name = recette.Name,
-                    Picture = recette.Picture, 
-                    Preparation = recette.Preparation  
-                };
-                _logger.LogInformation($"ça marhe pour les ingredients:{ingDB.Count}");
+                List<Ingredient> recetteIngredients = _ngCookingRepository.GetIngredientsByRecetteId(recette.Id).ToList();
+                List<Comment> recetteComments = _ngCookingRepository.GetCommentsByRecetteId(recette.Id).ToList();
+                var recetteVM = Mapper.Map<RecetteViewModel>(recette);  
+                _logger.LogInformation($"ça marhe pour les ingredients:{recetteIngredients.Count}");
                 recetteVM.Ingredients = new List<Ingredient>();
                 recetteVM.Comments = new List<Comment>(); 
                 //formattage de ingredients
-                foreach (Ingredient ingredient in ingDB)
+                foreach (Ingredient ingredient in recetteIngredients)
                 {
                     recetteVM.Ingredients.Add((Ingredient)_ngCookingRepository.FindById(ingredient.Id, "Ingredient"));  
                 }
                 //formattage de comments
-                foreach (Comment comment in commentsDB)
+                foreach (Comment comment in recetteComments) 
                 {
                     Comment cmnt = new Comment() {CommentBody=comment.CommentBody,Id=comment.Id,Mark=comment.Mark,Title=comment.Title,UserId=comment.UserId};
                     recetteVM.Comments.Add(cmnt); 
@@ -78,30 +69,20 @@ namespace WebAPI.Controllers
         {
             try
             {
-                if (ModelState.IsValid)
-                {
-                    //var newRecette = Mapper.Map<Recette>(recetteVM); 
+                this.HttpContext.Request.Form.Files["picture"].OpenReadStream();//l'image à charger 
+                    
+                if (ModelState.IsValid)    
+                { 
                     Response.StatusCode = (int)HttpStatusCode.Created;
-                    var pic = _ngCookingRepository.FileToByteArray(recetteVM.Picture);
-                    RecetteFromViewModel newRec= recetteVM;
-                    _logger.LogInformation($"adding successfuly:{recetteVM.Name}");   
-                        var newRecette = new Recette()
-                        {
-                            Calories = recetteVM.Calories, 
-                            CreatorId = recetteVM.CreatorId, 
-                           // IsAvailable = recetteVM.IsAvailable,
-                            Name = recetteVM.Name,
-                            Preparation = recetteVM.Prepa,
-                            Category = recetteVM.Category.Name,
-                            //Picture = _ngCookingRepository.FileToByteArray(recetteVM.Picture)
-                        };
-                   _ngCookingRepository.Add<Recette>(newRecette);  
-                    RecetteIngredient newRecetteIngredient = null;  
-                    foreach (var ing in recetteVM.Ingredients) 
+                    _logger.LogInformation($"adding successfuly:{recetteVM.Name}"); 
+                    var newRecette = Mapper.Map<Recette>(recetteVM); 
+                    _ngCookingRepository.Add<Recette>(newRecette);
+                    RecetteIngredient newRecetteIngredient = null;
+                    foreach (var ing in recetteVM.Ingredients)
                     {
-                            object ingredient = _ngCookingRepository.FindByName(ing.Name, "Ingredient");
-                            newRecetteIngredient = new RecetteIngredient() { IngredientId = ((Ingredient)ingredient).Id, RecetteId = ((Recette)_ngCookingRepository.FindByName(newRecette.Name,"Recette")).Id};
-                            _ngCookingRepository.Add<RecetteIngredient>(newRecetteIngredient);  
+                        object ingredient = _ngCookingRepository.FindByName(ing.Name, "Ingredient");
+                        newRecetteIngredient = new RecetteIngredient() { IngredientId = ((Ingredient)ingredient).Id, RecetteId = ((Recette)_ngCookingRepository.FindByName(newRecette.Name, "Recette")).Id };
+                        _ngCookingRepository.Add<RecetteIngredient>(newRecetteIngredient);
                     }
                     return Json("it is succesfully added");
                 }

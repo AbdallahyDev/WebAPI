@@ -9,6 +9,7 @@ using WebAPI.ViewModels;
 using System.Net;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Authorization;
+using AutoMapper;
 
 // For more information on enabling Web API for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -35,23 +36,12 @@ namespace WebAPI.Controllers
         [HttpGet]
         public JsonResult Get()
         {
-            //Object result = _ngCookingRepository.FindById(1,"Communaute");
             var communautes = _ngCookingRepository.GetAll<Communaute>(_communaute);
             ICollection<CommunauteViewModel> communautesVM = new List<CommunauteViewModel>(); 
             foreach (Communaute communaute in communautes)
             {
-                var communauteVM = new CommunauteViewModel
-                {
-                    Id = communaute.Id,
-                    Bio = communaute.Bio,
-                    Birth = communaute.Birth,
-                    City = communaute.City,
-                    Firstname = communaute.Firstname,
-                    Level = communaute.Level,
-                    Picture = communaute.Picture,
-                    Surname = communaute.Surname
-                };
-                communautesVM.Add(communauteVM);
+                var communauteVM = Mapper.Map<CommunauteViewModel>(communaute); 
+                communautesVM.Add(communauteVM); 
             }
             return Json(communautesVM);    
         }
@@ -70,18 +60,7 @@ namespace WebAPI.Controllers
                 {                 
                     Response.StatusCode = (int)HttpStatusCode.Created;     
                     _logger.LogInformation("adding successfuly");
-                        var newCommunaute = new Communaute {
-                            Bio = communauteVM.Bio,
-                            Birth = communauteVM.Birth,
-                            City = communauteVM.City,
-                            Email = communauteVM.Email,
-                            Firstname = communauteVM.Firstname, 
-                            Surname = communauteVM.Surname,
-                            Level = communauteVM.Level,
-                            //Picture = communauteVM.Picture,  
-                            UserName = communauteVM.UserName
-                        }; 
-
+                    var newCommunaute = Mapper.Map<Communaute>(communauteVM); 
                     var result = await _communauteManeger.CreateAsync(newCommunaute, communauteVM.Password);  
                     if (result.Succeeded) 
                     {
