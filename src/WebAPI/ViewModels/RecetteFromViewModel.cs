@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using WebAPI.Models;
 
 namespace WebAPI.ViewModels
@@ -12,7 +9,7 @@ namespace WebAPI.ViewModels
         public int CreatorId { get; set; } 
         public string Picture { get; set; }
         public float Calories { get; set; }
-        public ICollection<Ingredient> Ingredients { get; set; }
+        public ICollection<Ingredient> Ingredients { get; set; } 
         public string Prepa { get; set; }
         public Category Category { get; set; } 
     }

@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNet.Mvc;
 using Microsoft.Extensions.Logging;
 using WebAPI.Models;
@@ -16,9 +14,8 @@ namespace WebAPI.Controllers
     public class CommentController : Controller
     {
         private ILogger<Comment> _logger;
-        private INGCookingRepository _ngCookingRepository;
-        private Comment _comment;
-
+        private INGCookingRepository _ngCookingRepository; 
+        private Comment _comment; 
         public CommentController(INGCookingRepository iNGCookingRep, ILogger<Comment> logger)
         {
             _ngCookingRepository = iNGCookingRep;  
@@ -36,19 +33,15 @@ namespace WebAPI.Controllers
         // GET api/values/5
         [HttpGet("{id}")]
         public JsonResult Get(string id)
-        {
-            //return Json(_ngCookingRepository.FindById(int.Parse(id),"Comment"));
-            
+        {          
             try
             {
                 if (ModelState.IsValid)
                 {
-                    //var newRecette = Mapper.Map<Recette>(recetteVM); 
                     Response.StatusCode = (int)HttpStatusCode.Created;
                     var res = _ngCookingRepository.GetCommentsByRecetteId(int.Parse(id));  
                     _logger.LogInformation($"adding successfuly {res.Count()}");      
                     return Json(res);  
-                    //return Json("it is succesfully added"); 
                 }
             }
             catch (Exception ex)

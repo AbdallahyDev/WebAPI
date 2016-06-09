@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNet.Mvc;
 using System.Net;
 using WebAPI.ViewModels;
 using WebAPI.Models;
-using AutoMapper;
 using Microsoft.Extensions.Logging;
 
 // For more information on enabling Web API for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
@@ -16,7 +14,7 @@ namespace WebAPI.Controllers
     [Route("api/[controller]")]
     public class RecetteController : Controller
     {
-        private INGCookingRepository _ngCookingRepository;
+        private INGCookingRepository _ngCookingRepository; 
         private Recette _recette;
         private ILogger<Recette> _logger;
 
@@ -30,10 +28,8 @@ namespace WebAPI.Controllers
         [HttpGet]
         public JsonResult Get() 
         {
-            //return Json(((Ingredient)_ngCookingRepository.FindByName("Huile tournesol", "Ingredient")).Id);
             List<Object> recettes = (_ngCookingRepository.GetAll<Recette>(_recette)).ToList();
             List<RecetteViewModel> recettesVM = new List<RecetteViewModel>();  
-            //return Json(recettesVM);
             foreach (Recette recette in recettes)
             {
                 List<Ingredient> ingDB = _ngCookingRepository.GetIngredientsByRecetteId(recette.Id).ToList();
@@ -55,19 +51,16 @@ namespace WebAPI.Controllers
                 //formattage de ingredients
                 foreach (Ingredient ingredient in ingDB)
                 {
-                    _logger.LogInformation($"in ingredients loop:{((Ingredient)_ngCookingRepository.FindById(ingredient.Id, "Ingredient")).Name}");
                     recetteVM.Ingredients.Add((Ingredient)_ngCookingRepository.FindById(ingredient.Id, "Ingredient"));  
                 }
                 //formattage de comments
                 foreach (Comment comment in commentsDB)
                 {
-                    //_logger.LogInformation($"in ingredients loop:{((Ingredient)_ngCookingRepository.FindById(ingrdient.Id, "Ingredient")).Name}");
                     Comment cmnt = new Comment() {CommentBody=comment.CommentBody,Id=comment.Id,Mark=comment.Mark,Title=comment.Title,UserId=comment.UserId};
                     recetteVM.Comments.Add(cmnt); 
                 }
                 recettesVM.Add(recetteVM);   
             }
-            
             _logger.LogInformation($"ça marhe pour les recettesVM:{recettesVM.Count}");    
             return Json(recettesVM); 
             
@@ -102,18 +95,14 @@ namespace WebAPI.Controllers
                             Category = recetteVM.Category.Name,
                             //Picture = _ngCookingRepository.FileToByteArray(recetteVM.Picture)
                         };
-                   // _ngCookingRepository.Add<Recette>(newRecette);  
+                   _ngCookingRepository.Add<Recette>(newRecette);  
                     RecetteIngredient newRecetteIngredient = null;  
                     foreach (var ing in recetteVM.Ingredients) 
                     {
                             object ingredient = _ngCookingRepository.FindByName(ing.Name, "Ingredient");
                             newRecetteIngredient = new RecetteIngredient() { IngredientId = ((Ingredient)ingredient).Id, RecetteId = ((Recette)_ngCookingRepository.FindByName(newRecette.Name,"Recette")).Id};
-                           // _ngCookingRepository.Add<RecetteIngredient>(newRecetteIngredient);  
+                            _ngCookingRepository.Add<RecetteIngredient>(newRecetteIngredient);  
                     }
-                    
-                    //return Json(newRecette); 
-                    //return Json(CreatedAtRoute("GetTodo", new { controller = "RecetteCnt" }, recetteVM));
-
                     return Json("it is succesfully added");
                 }
             }
@@ -136,7 +125,7 @@ namespace WebAPI.Controllers
 
         // DELETE api/values/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public void Delete(int id) 
         {
         }
     }

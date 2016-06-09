@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.Data.Entity;
+﻿using Microsoft.Data.Entity;
 using Microsoft.AspNet.Identity.EntityFramework;
 
 namespace WebAPI.Models
@@ -10,7 +6,6 @@ namespace WebAPI.Models
     public class DBContext : IdentityDbContext<Communaute> 
     {
         public DbSet<Recette> Recettes { get; set; }  
-       // public DbSet<Communaute> Communautes { get; set; }
         public DbSet<Comment> Comments { get; set; }   
         public DbSet<Ingredient> Ingredients { get; set; }  
         public DbSet<Category> Categories { get; set; }

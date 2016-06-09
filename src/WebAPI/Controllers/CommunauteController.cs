@@ -30,8 +30,7 @@ namespace WebAPI.Controllers
             _logger = logger;
             _communauteManeger = communauteManeger;
             _signInManager = signInManager; 
-        }
-
+        } 
         // GET: api/values
         [HttpGet]
         public JsonResult Get()
@@ -97,7 +96,6 @@ namespace WebAPI.Controllers
                         }
                         return Json(result.Errors.ToList()); 
                     }
-                    
                 }
             }
             catch (Exception ex)
@@ -163,17 +161,15 @@ namespace WebAPI.Controllers
                     return Json("Invalid login attempt.");
                 }
             }
-
             // If we got this far, something failed, redisplay form
             Response.StatusCode = (int)HttpStatusCode.BadRequest;
             return Json(new { Message = "Failed.", ModelState = ModelState }); 
         }
         // PUT api/values/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody]string value)
+        public void Put(int id, [FromBody]string value) 
         {
-        }
-
+        } 
         // DELETE api/values/5
         [HttpDelete("{id}")]
         public void Delete(int id)

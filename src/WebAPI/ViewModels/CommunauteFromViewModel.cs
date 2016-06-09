@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace WebAPI.ViewModels
+﻿namespace WebAPI.ViewModels
 {
     public class CommunauteFromViewModel
     {
@@ -16,6 +11,6 @@ namespace WebAPI.ViewModels
         public string Picture { get; set; }
         public string City { get; set; }
         public int Birth { get; set; }
-        public string Bio { get; set; }
+        public string Bio { get; set; } 
     }
 }

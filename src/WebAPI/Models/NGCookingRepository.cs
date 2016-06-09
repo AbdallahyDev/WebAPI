@@ -16,10 +16,8 @@ namespace WebAPI.Models
         }
         public NGCookingRepository()
         {
-
+             
         }
-
-
         public string Add<T>(T entity)
         { 
             Object t = entity;  
@@ -44,7 +42,6 @@ namespace WebAPI.Models
             {
                 _cntx.Categories.Add((Category)t);
             }
-
             var messRetour = (_cntx.SaveChanges() > 0) ? "entity added" : "adding entity failed";
             return messRetour;
         }
@@ -55,7 +52,7 @@ namespace WebAPI.Models
             Type type = entity.GetType();
             if (type.Equals(typeof(Communaute)))
             {
-                //_cntx.Communautes.Remove((Communaute)t);
+                _cntx.Users.Remove((Communaute)t); 
             }
             else if (type.Equals(typeof(Recette)))
             {
@@ -82,7 +79,8 @@ namespace WebAPI.Models
             return messRetour; 
         }
 
-        public Byte[] FileToByteArray(string fileName)
+        //method for geting a byte array from an image url
+        public Byte[] FileToByteArray(string fileName) 
         {
             byte[] fileContent = null; 
             System.IO.FileStream fs = new System.IO.FileStream(fileName, System.IO.FileMode.Open, System.IO.FileAccess.Read);
@@ -99,7 +97,6 @@ namespace WebAPI.Models
         {
             throw new NotImplementedException(); 
         }
-        
 
         public Object FindById(int id, string tableName)
         {
@@ -107,7 +104,7 @@ namespace WebAPI.Models
             switch (tableName)
             {
                 case "Communaute":
-                    //res= _cntx.Communautes.Single(x =>x.Id == id.ToString());     
+                    res= _cntx.Users.Single(x =>x.Id == id.ToString());     
                     break; 
                 case "Comment":
                     res = _cntx.Comments.Single(x => x.Id == id); 
@@ -133,14 +130,11 @@ namespace WebAPI.Models
             switch (tableName)
             {
                 case "Communaute":
-                    //res = _cntx.Communautes.Single(x => x.Firstname == name); 
+                    res = _cntx.Users.Single(x => x.Firstname == name); 
                     break;
                 case "Comment":
                     res = _cntx.Comments.Single(x => x.Title == name);  
                     break;
-                //case "RecetteIngredient":
-                //    res = _cntx.RecetteIngredient.Single(x => x.Id == id);
-                //    break;
                 case "Recette":
                     res = _cntx.Recettes.Single(x => x.Name == name);
                     break;
@@ -189,7 +183,7 @@ namespace WebAPI.Models
             }
             else if (type.Equals(typeof(Ingredient)))
             {
-                results = _cntx.Ingredients.OrderBy(c => c.Id);
+                results = _cntx.Ingredients.OrderBy(c => c.Id); 
             }
             else if (type.Equals(typeof(RecetteIngredient))) 
             {
@@ -201,12 +195,7 @@ namespace WebAPI.Models
             }
             return results;
         }
-
-        public void Save()
-        {
-            throw new NotImplementedException();
-        }
-         
+ 
         private string Encrypt(string clearText)
         {
             string EncryptionKey = "MAKV2SPBNI99212";

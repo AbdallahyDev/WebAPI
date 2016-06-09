@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNet.Mvc;
 using WebAPI.Models;
 using Microsoft.Extensions.Logging;
@@ -17,7 +15,7 @@ namespace WebAPI.Controllers
     public class CategoryController : Controller
     {
         private ILogger<Category> _logger;
-        private INGCookingRepository _ngCookingRepository;
+        private INGCookingRepository _ngCookingRepository; 
         private Category _category;
 
         public CategoryController(INGCookingRepository iNGCookingRep, ILogger<Category> logger)
@@ -69,13 +67,11 @@ namespace WebAPI.Controllers
             Response.StatusCode = (int)HttpStatusCode.BadRequest;
             return Json(new { Message = "Failed.", ModelState = ModelState });
         }
-
         // PUT api/values/5
         [HttpPut("{id}")]
         public void Put(int id, [FromBody]string value)
         {
         }
-
         // DELETE api/values/5
         [HttpDelete("{id}")]
         public void Delete(int id)

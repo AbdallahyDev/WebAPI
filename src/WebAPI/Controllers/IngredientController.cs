@@ -1,15 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNet.Mvc;
 using WebAPI.Models;
 using Microsoft.Extensions.Logging;
-using WebAPI.ViewModels;
+using WebAPI.ViewModels; 
 using System.Net;
 
-// For more information on enabling Web API for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
-
+// For more information on enabling Web API for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860 
 namespace WebAPI.Controllers
 {
     [Route("api/[controller]")]
@@ -17,12 +14,11 @@ namespace WebAPI.Controllers
     {
         private ILogger<Ingredient> _logger;
         private INGCookingRepository _ngCookingRepository;
-        private Ingredient _ingredient;
-
+        private Ingredient _ingredient; 
         public IngredientController(INGCookingRepository iNGCookingRep, ILogger<Ingredient> logger)
         {
             _ngCookingRepository = iNGCookingRep;
-            _ingredient = new Ingredient();
+            _ingredient = new Ingredient(); 
             _logger = logger;
         }
         // GET: api/values
@@ -31,14 +27,12 @@ namespace WebAPI.Controllers
         {
             return Json(_ngCookingRepository.GetAll<Ingredient>(_ingredient)); 
         }
-
         // GET api/values/5
         [HttpGet("{id}")]
         public string Get(int id)
         {
             return "value";
         }
-
         // POST api/values
         [HttpPost]
         public JsonResult Post([FromBody]ICollection<IngredientViewModel> ingredientsVM)
@@ -47,8 +41,7 @@ namespace WebAPI.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    //var newRecette = Mapper.Map<Recette>(recetteVM); 
-                    Response.StatusCode = (int)HttpStatusCode.Created;
+                    Response.StatusCode = (int)HttpStatusCode.Created; 
                     _logger.LogInformation("adding successfuly"); 
                     foreach (var ingredient in ingredientsVM)
                     {
@@ -58,7 +51,7 @@ namespace WebAPI.Controllers
                             Category =ingredient.Category, 
                             IsAvailable =ingredient.IsAvailable,  
                             Name =ingredient.Name, 
-                            Picture =_ngCookingRepository.FileToByteArray("ngCooking/img/ingredients/"+ingredient.Picture)    
+                            //Picture =_ngCookingRepository.FileToByteArray("ngCooking/img/ingredients/"+ingredient.Picture)    
                        };   
                          _ngCookingRepository.Add<Ingredient>(newIngredient);     
                     }
@@ -71,7 +64,6 @@ namespace WebAPI.Controllers
                 _logger.LogError("failed to save infos");
                 return Json(new { Message = ex.Message, ModelState = ModelState });
             }
-
             Response.StatusCode = (int)HttpStatusCode.BadRequest;
             return Json(new { Message = "Failed.", ModelState = ModelState });
         }
@@ -81,7 +73,6 @@ namespace WebAPI.Controllers
         public void Put(int id, [FromBody]string value)
         {
         }
-
         // DELETE api/values/5
         [HttpDelete("{id}")]
         public void Delete(int id)
