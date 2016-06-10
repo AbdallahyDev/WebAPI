@@ -5,9 +5,9 @@ using System.Text;
 using System.Security.Cryptography;
 using Microsoft.Data.Entity;
 
-namespace WebAPI.Models
+namespace WebAPI.Models.Repositories
 {
-    public class NGCookingRepository : INGCookingRepository
+    public class NGCookingRepository : INGCookingRepository 
     {
         private DBContext _cntx;
         public NGCookingRepository(DBContext cntx)
@@ -45,10 +45,10 @@ namespace WebAPI.Models
             var messRetour = (_cntx.SaveChanges() > 0) ? "entity added" : "adding entity failed";
             return messRetour;
         }
-        //method for deleting an entity       
-        public string Delete<T>(ref T entity)
+        
+        public string Delete<T>(T entity)
         {
-            Object t = entity;
+            Object t = entity; 
             Type type = entity.GetType();
             if (type.Equals(typeof(Communaute)))
             {
@@ -165,7 +165,7 @@ namespace WebAPI.Models
             return res;
         }
         
-        public IQueryable<Object> GetAll<T>(T entity)
+        public IQueryable<Object> GetAll<T>(T entity) 
         {
             Type type = entity.GetType(); 
             IQueryable<Object> results = null;     
@@ -175,7 +175,8 @@ namespace WebAPI.Models
             }
             else if (type.Equals(typeof(Recette)))
             {
-                results = _cntx.Recettes.OrderBy(c => c.Id);     
+                results = _cntx.Recettes.OrderBy(c => c.Id);    
+                 
             }
             else if (type.Equals(typeof(Comment)))
             {

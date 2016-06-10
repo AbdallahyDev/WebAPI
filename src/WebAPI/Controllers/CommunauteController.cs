@@ -10,6 +10,8 @@ using System.Net;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Authorization;
 using AutoMapper;
+using WebAPI.Models.Repositories;
+using System.Security.Claims;
 
 // For more information on enabling Web API for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -122,7 +124,8 @@ namespace WebAPI.Controllers
                 var result = await _signInManager.PasswordSignInAsync(loginVM.UserName, loginVM.Password, true, lockoutOnFailure: false);   
                 if (result.Succeeded) 
                 {
-                    _logger.LogInformation(1, "User logged in.");   
+                    _logger.LogInformation(1, "User logged in."); 
+                    var currentUserId = User.GetUserId(); 
                     return Json("User logged in succesfully"); 
                 }
                 if (result.RequiresTwoFactor)

@@ -9,8 +9,9 @@ using WebAPI.Models;
 using AutoMapper;
 using WebAPI.ViewModels;
 using Microsoft.AspNet.Identity.EntityFramework;
+using WebAPI.Models.Repositories;
 
-namespace NGCookingBackEnd
+namespace WebAPI
 {
     public class Startup
     {
@@ -54,12 +55,15 @@ namespace NGCookingBackEnd
                 config.CreateMap<RecetteFromViewModel, Recette>();
                 config.CreateMap<CommunauteFromViewModel, Communaute>();   
                 config.CreateMap<Communaute, CommunauteViewModel>(); 
+                config.CreateMap<Ingredient, IngredientViewModel>();  
+                config.CreateMap<IngredientViewModel, Ingredient>();   
+                config.CreateMap<Comment, CommentViewModel>();   
             });
             app.Use(async (context, next) =>
             {
                 context.Response.Headers.Add("Access-Control-Allow-Origin", "*");
                 context.Response.Headers.Add("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-                context.Response.Headers.Add("Access-Control-Allow-Headers", new[] { "Content-Type, x-xsrf-token" });
+                context.Response.Headers.Add("Access-Control-Allow-Headers", new[] { "Content-Type, x-xsrf-token" }); 
 
                 if (context.Request.Method == "OPTIONS")
                 {

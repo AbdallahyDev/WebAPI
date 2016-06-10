@@ -5,6 +5,8 @@ using Microsoft.Extensions.Logging;
 using WebAPI.Models;
 using System.Net;
 using WebAPI.ViewModels;
+using WebAPI.Models.Repositories;
+using AutoMapper;
 
 // For more information on enabling Web API for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -40,7 +42,7 @@ namespace WebAPI.Controllers
                 {
                     Response.StatusCode = (int)HttpStatusCode.Created;
                     var res = _ngCookingRepository.GetCommentsByRecetteId(int.Parse(id));  
-                    _logger.LogInformation($"adding successfuly {res.Count()}");      
+                    _logger.LogInformation($"Ajout reussi {res.Count()}");      
                     return Json(res);  
                 }
             }
@@ -62,12 +64,13 @@ namespace WebAPI.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    Response.StatusCode = (int)HttpStatusCode.Created;
-                    Comment newComment = new Comment() { CommentBody = commentVM.Comments, Mark = commentVM.Mark, Title = commentVM.Title,
-                        UserId = commentVM.UserId,
-                        Recette = (Recette)_ngCookingRepository.FindById(commentVM.RecetteId,"Recette") 
-                    };
-                    _ngCookingRepository.Add<Comment>(newComment);  
+                    Response.StatusCode = (int)HttpStatusCode.Created; 
+                    var newComment = Mapper.Map<Comment>(commentVM);
+                    //Comment newComment = new Comment() { CommentBody = commentVM.Comments, Mark = commentVM.Mark, Title = commentVM.Title,
+                    //    UserId = commentVM.UserId,
+                    //    Recette = (Recette)_ngCookingRepository.FindById(commentVM.RecetteId,"Recette") 
+                    //};
+                    _ngCookingRepository.Add<Comment>(newComment);    
                     return Json("comment successfully added");  
                 }
             }

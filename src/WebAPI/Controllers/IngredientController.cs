@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using Microsoft.AspNet.Mvc;
 using WebAPI.Models;
 using Microsoft.Extensions.Logging;
-using WebAPI.ViewModels; 
+using WebAPI.ViewModels;
 using System.Net;
+using AutoMapper;
+using WebAPI.Models.Repositories;
 
 // For more information on enabling Web API for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860 
 namespace WebAPI.Controllers
@@ -45,15 +47,9 @@ namespace WebAPI.Controllers
                     _logger.LogInformation("adding successfuly"); 
                     foreach (var ingredient in ingredientsVM)
                     {
-                        object i = _ngCookingRepository.FindByName(ingredient.Category, "Category");
-                        var newIngredient = new Ingredient() { 
-                            Calories =ingredient.Calories,
-                            Category =ingredient.Category, 
-                            IsAvailable =ingredient.IsAvailable,  
-                            Name =ingredient.Name, 
-                            //Picture =_ngCookingRepository.FileToByteArray("ngCooking/img/ingredients/"+ingredient.Picture)    
-                       };   
-                         _ngCookingRepository.Add<Ingredient>(newIngredient);     
+                        var newIngredient = Mapper.Map<Ingredient>(ingredient);
+                        newIngredient.Picture = _ngCookingRepository.FileToByteArray("ngCooking/img/ingredients/" + ingredient.Picture);    
+                        _ngCookingRepository.Add<Ingredient>(newIngredient);       
                     }
                     return Json("It is succesfully added"); 
                 }

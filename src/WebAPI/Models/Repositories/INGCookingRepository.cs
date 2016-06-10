@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Linq;
 
-namespace WebAPI.Models
+namespace WebAPI.Models.Repositories
 {
     public interface INGCookingRepository
     {
          string Add<T>(T entity);     
-         string Delete<T>(ref T entity);
+         string Delete<T>(T entity);
         string Edit<T>(T entity);
         Object FindById(int id, string tableName);
         Object FindByName(string name, string tableName);

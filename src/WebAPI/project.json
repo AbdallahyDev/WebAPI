@@ -19,7 +19,9 @@
     "Microsoft.Extensions.Logging.Debug": "1.0.0-rc1-final",
     "AutoMapper": "5.0.0-beta-1",
     "Microsoft.AspNet.Hosting": "1.0.0-rc1-final",
-    "Microsoft.AspNet.Identity.EntityFramework": "3.0.0-rc1-final"
+    "Microsoft.AspNet.Identity.EntityFramework": "3.0.0-rc1-final",
+    "Microsoft.AspNet.Mvc.WebApiCompatShim": "6.0.0-rc1-final",
+    "Microsoft.AspNet.Identity": "3.0.0-rc1-final"
   },
 
   "commands": {
