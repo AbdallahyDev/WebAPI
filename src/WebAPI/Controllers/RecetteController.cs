@@ -11,6 +11,11 @@ using System.Net.Http;
 using System.Web.Http;
 using Microsoft.Data.Entity;
 using WebAPI.Models.Repositories;
+using Microsoft.AspNet.Hosting;
+using System.Threading.Tasks;
+using Microsoft.AspNet.Http;
+using System.IO;
+using Microsoft.Net.Http.Headers;
 
 // For more information on enabling Web API for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -22,12 +27,14 @@ namespace WebAPI.Controllers
         private INGCookingRepository _ngCookingRepository; 
         private Recette _recette;
         private ILogger<Recette> _logger;
+        private IHostingEnvironment _environment;
 
-        public RecetteController(INGCookingRepository iNGCookingRep, ILogger<Recette> logger)
+        public RecetteController(INGCookingRepository iNGCookingRep, ILogger<Recette> logger, IHostingEnvironment environment)
         {
             _ngCookingRepository = iNGCookingRep;  
             _recette = new Recette();   
-            _logger = logger;  
+            _logger = logger;
+            _environment = environment; 
         }
         // GET: api/values
         [HttpGet]
@@ -67,13 +74,32 @@ namespace WebAPI.Controllers
             return "value";  
         }
 
+        //Method for uploading file 
+        [HttpPost]
+        [Route("Uploads")]
+        public async Task<JsonResult> PostFile(ICollection<IFormFile> files)
+        {
+            var uploads = Path.Combine(_environment.WebRootPath, "uploads");  
+            foreach (var file in files)
+            {
+                if (file.Length > 0)
+                {
+                    var fileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
+                    await file.SaveAsAsync(Path.Combine(uploads, fileName));  
+                }
+            }
+            return Json("End of upload");  
+        }
+
+
         [HttpPost]
         public JsonResult Post([FromBody]RecetteFromViewModel recetteVM) 
         {
             try
             {
-               // var pic = this.HttpContext.Request.Form.Count();//.Files["picture"].OpenReadStream();//l'image à charger  
-                                                                // HttpRequestMessage request = HttpContext.Request;
+                #region upload file
+                // var pic = this.HttpContext.Request.Form.Count();//.Files["picture"].OpenReadStream();//l'image à charger  
+                // HttpRequestMessage request = HttpContext.Request;
                 //if (!Request.Content.IsMimeMultipartContent())
                 //    throw new HttpResponseException(HttpStatusCode.UnsupportedMediaType);
 
@@ -92,12 +118,13 @@ namespace WebAPI.Controllers
                 //{
                 //   // request..InputStream.CopyTo(fs);
                 //}
+                #endregion
 
 
-                if (ModelState.IsValid) 
+                if (ModelState.IsValid)  
                 {
                     Response.StatusCode = (int)HttpStatusCode.Created;
-                    _logger.LogInformation($"adding successfuly:{recetteVM.Name}");
+                    _logger.LogInformation($"adding successfuly:{recetteVM.Name}"); 
                     var newRecette = Mapper.Map<Recette>(recetteVM);
                     _ngCookingRepository.Add<Recette>(newRecette);
                     RecetteIngredient newRecetteIngredient = null;
