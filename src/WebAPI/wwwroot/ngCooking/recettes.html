@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<div class="col-xs-12 col-sm-9" ng-controller="recettesController as recCtrl">
+    <div class="content" id="content_recettes">
+        <h1 class="page-title">Les recettes</h1>
+        <section class="section">
+            <h2 class="title">~ Trouver une recette ~</h2>
+            <div class="panel">
+                <div class="row imgback">
+                    <div class="col-xs-3"></div>
+                    <div class="col-xs-12 col-sm-9 fp">
+                        <div class="filters">
+                            <form action="">
+                                <div class="filter">
+                                    <p><label for="">Nom de la recette</label></p>
+                                    <p><input type="text" placeholder="ex: Tajine de poulet"
+                                              ng-model="recetteTofound.name"></p>
+                                </div>
+                                <div class="filter">
+                                    <p><label for="">Ingrédient(s) utlisé(s) pour la recette</label></p>
+                                    <p><input type="text" placeholder="ex: poulet;oeuf;farine"
+                                              ng-model="recetteTofound.ingredients"></p>
+                                </div>
+                                <div class="filter">
+                                    <p><label for="">Valeur calorique de la recette <span class="fwn">(kcal/100g)</span></label>
+                                    </p>
+                                    <p>
+                                        <span class="span-label">entre :</span>
+                                        <input type="number" class="mr0" placeholder="ex: 450"
+                                               ng-model="recetteTofound.minCaloriesValue">
+                                        <span class="span-label">et</span>
+                                        <input type="number" placeholder="ex: 750"
+                                               ng-model="recetteTofound.maxCaloriesValue">
+                                    </p>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="sort">
+                <p>
+                    <span class="span-label">Trier par:</span>
+                    <select name="" id="" ng-model="recetteTofound.Canon">
+                        <option value="+name">Ordre alphabétique (A->Z)</option>
+                        <option value="-name">Ordre alphabétique (Z->A)</option>
+                        <option value="-date">Les plus récentes d'abord</option>
+                        <option value="+date">Les plus anciennes d'abord</option>
+                        <option value="-notes">Les mieux notées d'abord</option>
+                        <option value="+notes">Les moins bien notées d'abord</option>
+                        <option value="+calories">Du moins calorique au plus calorique</option>
+                        <option value="-calories">Du plus calorique au moins calorique</option>
+                    </select>
+                </p>
+            </div>
+            <div class="result" ng-init="nbrPermitted=4">
+                <div class="recettes row">
+                    <p class="col-xs-12 blank" ng-show="!filtredRecettes.length>0">Aucune recette ne correspond à votre
+                        recherche</p>
+                    <div class="col-xs-6 col-sm-3 recette"
+                         ng-repeat="recette in filtredRecettes =(sortedRecettes|findRecetteByName:recetteTofound|findRecetteByIngs:recetteTofound|findRecetteByCalValue:recetteTofound)|orderBy:recetteTofound.Canon|limitTo:nbrPermitted track by $index">
+                        <a href="#/recettes_details" ng-click="addRecetteToCookie(recette.id)">
+                            <img ng-src="data:image/JPEG;base64,{{recette.picture}}" alt="{{recette.name}}">
+                            <div class="top" title="{{recette.notes}} : /5">
+                                            <span class="note" ng-repeat=" star in recette.stars track by $index">
+                                                <span class="glyphicon glyphicon-heart"></span>
+                                            </span>
+                            </div>
+                            <div class="bot">
+                                <p class="name">{{recette.name}}</p>
+                            </div>
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+            <div class="row showmore" ng-show="(filtredRecettes.length>4)&& (nbrPermitted<filtredRecettes.length)">
+                <div class="col-xs-12">
+                    <button type="button" class="btn btn_color1" ng-click="nbrPermitted=nbrPermitted+8"><span
+                            class="glyphicon glyphicon-chevron-down"></span>Afficher d'avantage
+                    </button>
+                </div>
+            </div>
+        </section>
+        <!-- including of the best and the new recettes--->
+        <best-recettes></best-recettes>
+        <new-recettes></new-recettes>
+
+    </div>
+</div>
+

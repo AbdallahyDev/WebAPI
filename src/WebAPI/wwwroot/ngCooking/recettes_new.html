@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+
+
+<main id="main">
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12 col-sm-9">
+                <div class="content" id="content_recettes_new">
+
+                    <h1 class="page-title">Nouvelle recette</h1>
+
+                    <section class="section">
+                       
+                        <form name="newRecForm" ng-init="isValid==false && isInvalid==false"
+                              ng-submit="newRecForm.$valid && addNewRec(picFile)" enctype="multipart/form-data" novalidate > 
+                            <div class="row">
+                                <div class="col-xs-6">
+                                    <p class="line">
+                                        <label for="">Le nom de votre recette</label>
+                                        <input name="name" type="text" class="mb0 wide" ng-model="newRec.name"
+                                               ng-required="true">
+                                        <span style="color: #ea0000;font-size: 12px "
+                                              ng-show="newRecForm.name.$error.required">Le nom est obligatoire</span> 
+                                    </p>
+                                    <p class="line">
+                                        <label for="">Catégorie</label>
+                                        <select name="category" class="mb0 wide" ng-model="newRec.category"
+                                                ng-options="itemCategory as  itemCategory.name for itemCategory in categories|orderBy:'name'"
+                                                required></select>  
+                                        <span style="color: #ea0000;font-size: 12px"
+                                              ng-show="newRecForm.category.$error.required">Une catégorie est obligatoire</span> 
+                                    </p>
+                                    <p class="line">
+                                        <label for="">Préparation de votre recette</label>  
+                                        <textarea name="prepa" id="recette_desc" class="resizable mb0 wide"
+                                                  ng-model="newRec.preparation" required></textarea> 
+                                        <span style="color: #ea0000;font-size: 12px "
+                                              ng-show="newRecForm.prepa.$error.required">un mode de préparation est obligatoire</span>
+                                    </p>
+                                </div>
+                                <div class="col-xs-6">
+                                    <p class="line">
+                                        <label for="">Photo de la recette</label> 
+                                        <!---input type="file" ngf-thumbnail="picFile" custom-on-change="uploadFile">-->
+                                            <input type="file" ngf-select ng-model="picFile" name="file"
+                                                   accept="image/*" ngf-max-size="2MB" required 
+                                                   ngf-model-invalid="errorFile" custom-on-change="uploadPic" multiple> 
+                                    </p>
+                                    <p class="line ac">
+                                        <img class="current_img" ng-src="img/recette_placeholder.jpg"
+                                             alt="Visuel recette" ng-show="picFile===undefined">      
+                                        <img class="current_img" ng-hide="picFile===undefined" ngf-thumbnail="picFile" alt="{{picFile.name}}"  >
+                                    </p>
+                                </div>
+                                <div class="col-xs-12">
+                                    <div class="hr mt2 mb2"></div>
+                                </div>
+                                <div class="col-xs-12">
+                                    <p class="line ac">
+                                        <label for="">Sélectionnez tous les ingrédients de votre
+                                            recette</label> 
+                                    </p>
+                                    <p class="ac">
+                                        <select ng-model="IngCategory"  
+                                                ng-options="itemCategory as  itemCategory.name for itemCategory in categories|orderBy:'name'"></select>
+                                        <span class="span-label"><span class="glyphicon glyphicon-menu-right nm"></span></span> 
+                                        <select ng-model="ing"
+                                                ng-options="itemIng as itemIng.name {{fillIng()}} for itemIng in itemsIng|orderBy:'name'"></select>
+                                        <button type="button" class="btn btn_color3" ng-click="addToIng()"><span 
+                                                class="glyphicon glyphicon-plus"></span></button>   
+
+                                    </p>
+                                    <div class="ingredients_list">
+                                        <ul class="list ac">
+                                            <li class="item" ng-repeat="ing in newRec.ingredients track by $index"> 
+                                                <img class="item-img" ng-src="data:image/JPEG;base64,{{ing.picture}}"
+                                                     alt="{{ing.name}}"> 
+                                                <p class="item-name" title="{{ing.name}}">{{ing.name}}</p>
+                                                <button type="button" class="remove_ingredient" 
+                                                        ng-click="removeFromIng(ing)"><span
+                                                        class="glyphicon glyphicon-remove"></span></button>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <div class="ac">
+                                        <p class="recette_total_calories">
+                                            <span class="tit">Valeur calorique <span
+                                                    class="mass">(100g)</span> : </span><span class="val">{{newRec.calories}}<span
+                                                class="unit">kcal</span></span>
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="col-xs-12">
+                                    <div class="hr mb2"></div>
+                                </div>
+                                <div class="col-xs-12 ac">
+                                    <input type="submit" class="btn btn_color3 recette_save" >
+                                    
+                                </div>
+
+                                <!-- Afficher au clic sur "valider ma recette" lorsque tout s'est bien déroulé -->
+                                <div class="col-xs-12" ng-show="isValid">
+                                    <p class="ac mt2 tb">
+                                        <span class="glyphicon glyphicon-thumbs-up color3"></span>
+                                        <span>Votre recette a bien été ajoutée !</span>
+                                    </p>
+                                    <p class="ac">
+                                        <a class="btn btn_color1" href="#/communaute_details" ng-click="addToCookie()"><span
+                                                class="glyphicon glyphicon-cutlery"></span><span>Mes recettes</span></a>   
+                                    </p>
+                                </div>
+
+                                <!-- Afficher au clic sur "valider ma recette" si certains éléments sont manquants -->
+                                <div class="col-xs-12" ng-show="isInvalid">
+                                    <p class="ac mt2 tb">
+                                        <span class="glyphicon glyphicon-exclamation-sign color2"></span>
+                                        <span>Woops ! Votre recette est super foireuse</span>
+                                    </p>
+                                    <p class="ac">Vous avez dû oublier quelque chose...</p>
+                                </div>
+                            </div>
+                        </form>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>

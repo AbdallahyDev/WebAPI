@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<div id="wrapper" ng-controller="communauteDetailsController as comDetailsCtrl">
+    <main id="main">
+        <div class="container">
+            <div class="row">
+                <div class="col-xs-12 col-sm-9">
+                    <div class="content" id="content_communaute_details">
+
+                        <section class="section details">
+                            <div class="row">
+                                <div class="col-vxs-12 col-xs-6 col-sm-5">
+                                    <div class="avatar-wrap">
+                                        <img class="avatar" ng-src="data:image/JPEG;base64,{{userDetail.picture}}" 
+                                             alt="{{userDetail.firstname}}">
+                                    </div>
+                                </div>
+                                <div class="col-vxs-12 col-xs-6 col-sm-7">
+                                    <div class="infos">
+                                        <h1 class="name">{{userDetail.firstname}} {{userDetail.surname}}</h1>
+                                        <p class="level">
+											<span class="stars"
+                                                  ng-repeat="star in getStars(userDetail.level) track by $index">
+												<span class="glyphicon glyphicon-star"></span>
+											</span>
+                                            <span class="status">{{getLevel(userDetail.level)}}</span>
+                                        </p>
+                                        <p class="city"><span class="fwb">Ville : </span>{{userDetail.city}}</p>
+                                        <p class="age"><span class="fwb">Age : </span>{{getAge(userDetail.birth)}} ans
+                                        </p>
+                                        <p class="shared"><span class="fwb">{{userDetail.firstname}}</span> a partagé
+                                            <span class="nb">{{userDetail.recettes.length}} recettes</span>
+                                        </p>
+                                        <p class="bio"><span class="fwb">BIO : </span>{{userDetail.bio}}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- Afficher le bloc ci-dessous uniquement si lutilisateur connecté se rend sur sa propre page -->
+                        <section class="section newrecette" ng-show="getIsConnected()==='true'">
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <p class="c">Vous en avez sous la toque ?!</p>
+                                    <p class="b">
+                                        <a href="#/recettes_new" class="btn btn_color1"><span
+                                                class="glyphicon glyphicon-plus-sign"></span><span>Créez une nouvelle recette</span></a>
+                                    </p>
+                                </div>
+                            </div>
+                        </section>
+
+                        <section class="section">
+                            <h2 class="title">~ Les recettes de {{userDetail.firstname}} ~</h2>
+                            <div class="recettes row">
+                                <div class="col-xs-6 col-sm-3 recette"
+                                     ng-repeat="recette in userDetail.recettes|orderBy:-recette.date">
+                                    <a href="#/recettes_details">
+                                        <img ng-src={{recette.picture}} alt="{{recette.name}}">
+                                        <div class="top" title="note : {{recette.notes}}/5">
+											<span class="note" ng-repeat="star in recette.stars track by $index">
+												<span class="glyphicon glyphicon-heart"></span>
+											</span>
+                                        </div>
+                                        <div class="bot">
+                                            <p class="name">{{recette.name}}</p>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>

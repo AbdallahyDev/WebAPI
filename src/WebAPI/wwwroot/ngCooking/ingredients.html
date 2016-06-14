@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<div class="col-xs-12 col-sm-9" ng-controller="ingredientsController as ingctrl">
+    <div class="content" id="content_ingredients">
+        <h1 class="page-title">Les ingredients</h1>
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="panel">
+                    <div class="row imgback">
+                        <div class="hidden-xs col-sm-3"></div>
+                        <div class="col-xs-12 col-sm-9 fp">
+                            <div class="filters">
+                                <form action="#" novalidate>
+                                    <div class="filter">
+                                        <p><label for="">Nom de l'ingrédient</label></p>
+                                        <p><input type="text" placeholder="ex: Banane" ng-model="ingToFind.name"></p>
+                                    </div>
+                                    <div class="filter">
+                                        <p><label for="">Catégorie</label></p>
+                                        <p>
+                                            <select name="" id="" ng-model="ingToFind.category"  
+                                                    ng-options="itemCategory as  itemCategory.name for itemCategory in categories|orderBy:+name"> </select>
+                                        </p>
+                                    </div>
+                                    <div class="filter">
+                                        <p><label for="">Nombre de calories <span class="fwn">(kcal/100g)</span></label>
+                                        </p>
+                                        <p>
+                                            <span class="span-label">entre :</span>
+                                            <input type="number" class="mr0" placeholder="ex: 70"
+                                                   ng-model="ingToFind.minCaloriesValue">
+                                            <span class="span-label">et</span>
+                                            <input type="number" placeholder="ex: 220"
+                                                   ng-model="ingToFind.maxCaloriesValue">
+                                        </p>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-12" ng-init="limitNbr=10">
+                <div class="result">
+
+                    <div class="ingredients row">
+
+                        <p class=" col-xs-12 blank" ng-show="!filtredIngs.length>0">Aucun ingrédient ne correspond à
+                            votre recherche</p>
+
+
+                        <div class="col-xs-12 ingredient"
+                             ng-repeat="ingredient  in filtredIngs =(ingredients|findIngByName:ingToFind|findIngsByCategory:ingToFind|findIngByCalValue:ingToFind)|limitTo:limitNbr">
+                            <!--|orderBy:recetteTofound.Canon|limitTo:4) track by $index" ng-show="recettesFiltred.length==4"-->
+                            <div class="ing-wrap">
+                                <div class="top">
+                                    <p class="name">{{ingredient.name}}</p>
+                                    <p class="category">{{ingredient.category}}</p>
+                                    <img class="img" ng-src="data:image/JPEG;base64,{{ingredient.picture}}" alt="{{ingredient.name}}">  
+                                    <div class="calories-wrap">  
+                                        <div class="val">
+                                            <span>{{ingredient.calories}} kcal</span> 
+                                            <div class="battery">
+                                                <!-- pourcentage ci-dessous à moduler en fonction du nombre de calories de l'ingredient sur nombre de calories max -->
+                                                <div class="level"
+                                                     ng-style="{ 'width' : getWidth(ingredient.calories)+'%'}"
+                                                     style="width: 90%;"></div> 
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="bot">
+                                    <p class="description">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quo
+                                        pariatur obcaecati ut, sit veniam molestias eius cum. Facere quibusdam laborum
+                                        doloribus, incidunt omnis ipsum alias vel est molestiae.</p>
+                                    <div class="list">
+                                        <p class="list-title">Aliments similaires</p>
+                                        <ul>
+                                            <li class="item"
+                                                ng-repeat="aliment in (ingredients|filterSameIngByCategory:ingredient.category|filterByCalValue:ingredient|limitTo:3)">
+                                                <img class="item-img" ng-src="data:image/JPEG;base64,{{aliment.picture}}"
+                                                     alt="{{aliment.name}}">
+                                                <p class="item-name" title="{{aliment.name}}">{{aliment.name}}</p>   
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+
+                </div>
+
+                <div class="row showmore" ng-show="(filtredIngs.length>10 && limitNbr<filtredIngs.length)">
+                    <div class="col-xs-12">
+                        <button type="button" class="btn btn_color1" ng-click="ShowMoreIng()"><span
+                                class="glyphicon glyphicon-chevron-down"></span>Afficher d'avantage
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+

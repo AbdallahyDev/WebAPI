@@ -1,0 +1,71 @@
+﻿<div class="col-xs-11 col-sm-9" ng-controller="inscriptionController"> 
+    <form class="col-xs-12 blank"  name="registerForm">
+        <p>
+            <label class="fwb" for="firstname">Firstname</label>  
+            <input type="text" id="firstname" name="firstname" ng-model="newUser.firstname" ng-minlength="3" ng-maxlength="20" ng-pattern="/^[A-z][A-z0-9]*$/" required />
+            <span ng-show="registerForm.firstname.$error.required && registerForm.firstname.$dirty">required</span>
+            <span ng-show="!registerForm.firstname.$error.minLength && !registerForm.firstname.$error.maxLength && registerForm.firstname.$error.pattern && registerForm.firstname.$dirty">Must start with a letter, and contain letters &amp; numbers only.</span>
+            <span ng-show="!registerForm.firstname.$error.required && (registerForm.firstname.$error.minlength || registerForm.firstname.$error.maxlength) && registerForm.firstname.$dirty">Firstname must be between 3 and 20 characters.</span>
+        </p> 
+        <p>
+            <label class="fwb" for="surname">Surname</label>
+            <input type="text" id="surname" name="surname" ng-model="newUser.surname" ng-minlength="3" ng-maxlength="20" ng-pattern="/^[A-z][A-z0-9]*$/" required />
+            <span ng-show="registerForm.surname.$error.required && registerForm.surname.$dirty">required</span>
+            <span ng-show="!registerForm.surname.$error.minLength && !registerForm.surname.$error.maxLength && registerForm.surname.$error.pattern && registerForm.surname.$dirty">Must start with a letter, and contain letters &amp; numbers only.</span>
+            <span ng-show="!registerForm.surname.$error.required && (registerForm.surname.$error.minlength || registerForm.surname.$error.maxlength) && registerForm.surname.$dirty">Surname must be between 3 and 20 characters.</span>
+        </p> 
+        <p>
+            <label class="fwb" for="userName">Username</label> 
+            <input type="text" id="userName" name="firstname" ng-model="newUser.userName" ng-minlength="3" ng-maxlength="20" ng-pattern="/^[A-z][A-z0-9]*$/" required />
+            <span ng-show="registerForm.userName.$error.required && registerForm.userName.$dirty">required</span>
+            <span ng-show="!registerForm.userName.$error.minLength && !registerForm.userName.$error.maxLength && registerForm.userName.$error.pattern && registerForm.userName.$dirty">Must start with a letter, and contain letters &amp; numbers only.</span>
+            <span ng-show="!registerForm.userName.$error.required && (registerForm.userName.$error.minlength || registerForm.userName.$error.maxlength) && registerForm.userName.$dirty">Username must be between 3 and 20 characters.</span>
+        </p> 
+        <p>
+            <label class="fwb" for="city">City</label>
+            <input type="text" id="city" name="city" ng-model="newUser.city" required /> 
+         </p> 
+        <p>
+            <label class="fwb" for="birth">Birth</label>
+            <input type="number" id="birth" name="birth" ng-model="newUser.birth" ng-minlength="4" required/>   
+            <span ng-show="registerForm.birth.$error.required && registerForm.birth.$dirty">required</span>
+            <span ng-show="registerForm.birth.$error.minLength">Must contain 4 numbers</span> 
+        </p> 
+        <p>
+            <label class="fwb" for="bio">Bio</label>  
+            <input type="text" id="bio" name="bio" ng-model="newUser.bio" required />  
+        </p> 
+        <p> 
+            <input class="fwb" type="file" ngf-select ng-model="newUser.picture" name="file"
+                   accept="image/*" ngf-max-size="2MB" required
+                   ngf-model-invalid="errorFile" custom-on-change="uploadPic"> 
+        </p>   
+        <p>
+            <label class="fwb" for="email" >Email</label>  
+            <input name="email" id="email" type="email" ng-model="newUser.email" required /> 
+            <span ng-show="registerForm.email.$error.required && registerForm.email.$dirty">required</span>
+            <span ng-show="!registerForm.email.$error.required && registerForm.email.$error.email && registerForm.email.$dirty">Email invalide</span> 
+        </p> 
+        <p class="fwb" ng-class="{'has-error': registerForm.$dirty && registerForm.Password.$invalid, 'has-success': registerForm.Password.$valid}"> 
+            <label for="Password">Password</label> 
+                <input id="Password" type="password" class="form-control" required ng-minlength="6" name="Password" ng-model="newUser.password"/>  
+             <span  ng-show="registerForm.Password.$error.minlength">  
+                Password too short 
+            </span>
+
+        </p>
+        <p class="fwb" ng-class="{'has-error': registerForm.$dirty && registerForm.ConfirmPassword.$invalid, 'has-success': registerForm.ConfirmPassword.$valid}">
+            <label  for="ConfirmPassword">Confirm Password</label> 
+                <input id="ConfirmPassword" type="password" class="form-control" required equals-to="registerForm.Password" name="ConfirmPassword" ng-model="confPassword" />
+             <span  ng-show="confPassword!==newUser.password && newUser.password!=''"> 
+                Passwords are differents  
+            </span>
+
+        </p>
+        <div class="fwb">
+            <div class="col-sm-offset-3 col-sm-9">  
+                <input type="submit" class="btn btn_big btn_color1" value="Sign Up" ng-click="addUser()" ng-disabled="registerForm.$invalid" />         
+            </div>
+        </div>
+    </form>
+</div>
